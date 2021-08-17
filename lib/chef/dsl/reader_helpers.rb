@@ -13,7 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-require_relative "toml"
+
+autoload :TOML, "toml"
 require_relative "../json_compat"
 autoload :YAML, "yaml"
 
@@ -32,11 +33,17 @@ class Chef
         end
       end
 
-      def parse_json(filename); end
+      def parse_json(filename)
+        JSONCompat.parse(IO.read(filename))
+      end
 
-      def parse_toml(filename); end
+      def parse_toml(filename)
+        TOML.load_file(filename)
+      end
 
-      def parse_yaml(filename); end
+      def parse_yaml(filename)
+        YAML.load(IO.read(filename))
+      end
 
       extend self
     end

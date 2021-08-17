@@ -73,6 +73,8 @@ class Chef
       # include_input ".*::ssh.*"
       #
       def include_input(arg)
+        raise "include_input was given a nil value" if arg.nil?
+
         # if we're given a hash argument just shove it in the raw_hash
         if arg.is_a?(Hash)
           raw_hash.merge!(arg)

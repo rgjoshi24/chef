@@ -73,6 +73,8 @@ class Chef
       # include_waiver ".*::ssh.*"
       #
       def include_waiver(arg)
+        raise "include_waiver was given a nil value" if arg.nil?
+
         # if we're given a hash argument just shove it in the raw_hash
         if arg.is_a?(Hash)
           raw_hash.merge!(arg)
