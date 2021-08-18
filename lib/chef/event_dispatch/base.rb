@@ -203,19 +203,19 @@ class Chef
       # Called when a compliance profile is found in a cookbook by the cookbook_compiler
       def compliance_profile_loaded(cookbook_name, path, pathname, name, version); end
 
-      # Called when a compliance wavier is found in a cookbook by the cookbook_compiler
+      # Called when a compliance waiver is found in a cookbook by the cookbook_compiler
       def compliance_waiver_loaded(cookbook_name, pathname, path); end
 
-      # Called when a compliance wavier is found in a cookbook by the cookbook_compiler
+      # Called when a compliance waiver is found in a cookbook by the cookbook_compiler
       def compliance_input_loaded(cookbook_name, pathname, path); end
 
       # Called when a compliance profile is enabled (by include_profile)
       def compliance_profile_enabled(cookbook_name, pathname, name, path); end
 
-      # Called when a compliance wavier is enabled (by include_waiver)
+      # Called when a compliance waiver is enabled (by include_waiver)
       def compliance_waiver_enabled(cookbook_name, pathanme, path); end
 
-      # Called when a compliance wavier is enabled (by include_input)
+      # Called when a compliance waiver is enabled (by include_input)
       def compliance_input_enabled(cookbook_name, pathanme, path); end
 
       # Called before attribute files are loaded

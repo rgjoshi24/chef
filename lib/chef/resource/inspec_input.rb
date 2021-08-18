@@ -60,7 +60,11 @@ class Chef
         name_property: true
 
       action :add do
-        include_input(input_hash)
+        if run_context.input_collection.valid?(new_resource.source)
+          include_input(new_resource.source)
+        else
+          include_input(input_hash)
+        end
       end
 
       action_class do

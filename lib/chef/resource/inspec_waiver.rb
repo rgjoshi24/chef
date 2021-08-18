@@ -73,7 +73,11 @@ class Chef
       property :source, [ Hash, String ]
 
       action :add do
-        include_waiver(waiver_hash)
+        if run_context.waiver_collection.valid?(new_resource.control)
+          include_waiver(new_resource.control)
+        else
+          include_waiver(waiver_hash)
+        end
       end
 
       action_class do
@@ -86,7 +90,7 @@ class Chef
           @source ||=
             begin
               return new_resource.source unless new_resource.source.nil?
-              return nil unless new_resource.control.count(::File::SEPARATOR) > 0 || new_resource.control.count(::File::ALT_SEPARATOR) > 0
+              return nil unless new_resource.control.count(::File::SEPARATOR) > 0 || (::File::ALT_SEPARATOR && new_resource.control.count(::File::ALT_SEPARATOR) > 0 )
               return nil unless ::File.exist?(new_resource.control)
 
               new_resource.control

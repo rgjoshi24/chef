@@ -81,17 +81,11 @@ class Chef
           return
         end
 
-        (cookbook_name, waiver_name) = arg.split("::")
+        matching_waivers!(arg).each(&:enable!)
+      end
 
-        waiver_name = "default" if waiver_name.nil?
-
-        waivers = select { |waiver| /^#{cookbook_name}$/.match?(waiver.cookbook_name) && /^#{waiver_name}$/.match?(waiver.pathname) }
-
-        if waivers.empty?
-          raise "No inspec waivers matching '#{waiver_name}' found in cookbooks matching '#{cookbook_name}'"
-        end
-
-        waivers.each(&:enable!)
+      def valid?(arg)
+        !matching_waivers(arg).empty?
       end
 
       HIDDEN_IVARS = [ :@events ].freeze
@@ -103,6 +97,26 @@ class Chef
           "#{ivar}=#{instance_variable_get(ivar).inspect}"
         end.join(", ")
         "#<#{self.class}:#{object_id} #{ivar_string}>"
+      end
+
+      private
+
+      def matching_waivers(arg, should_raise: false)
+        (cookbook_name, waiver_name) = arg.split("::")
+
+        waiver_name = "default" if waiver_name.nil?
+
+        waivers = select { |waiver| /^#{cookbook_name}$/.match?(waiver.cookbook_name) && /^#{waiver_name}$/.match?(waiver.pathname) }
+
+        if waivers.empty? && should_raise
+          raise "No inspec waivers matching '#{waiver_name}' found in cookbooks matching '#{cookbook_name}'"
+        end
+
+        waivers
+      end
+
+      def matching_waivers!(arg)
+        matching_waivers(arg, should_raise: true)
       end
     end
   end

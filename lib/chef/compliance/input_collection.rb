@@ -81,17 +81,11 @@ class Chef
           return
         end
 
-        (cookbook_name, input_name) = arg.split("::")
+        matching_inputs(arg).each(&:enable!)
+      end
 
-        input_name = "default" if input_name.nil?
-
-        inputs = select { |input| /^#{cookbook_name}$/.match?(input.cookbook_name) && /^#{input_name}$/.match?(input.pathname) }
-
-        if inputs.empty?
-          raise "No inspec inputs matching '#{input_name}' found in cookbooks matching '#{cookbook_name}'"
-        end
-
-        inputs.each(&:enable!)
+      def valid?(arg)
+        !matching_inputs(arg).empty?
       end
 
       HIDDEN_IVARS = [ :@events ].freeze
@@ -103,6 +97,26 @@ class Chef
           "#{ivar}=#{instance_variable_get(ivar).inspect}"
         end.join(", ")
         "#<#{self.class}:#{object_id} #{ivar_string}>"
+      end
+
+      private
+
+      def matching_inputs(arg, should_raise: false)
+        (cookbook_name, input_name) = arg.split("::")
+
+        input_name = "default" if input_name.nil?
+
+        inputs = select { |input| /^#{cookbook_name}$/.match?(input.cookbook_name) && /^#{input_name}$/.match?(input.pathname) }
+
+        if inputs.empty? && should_raise
+          raise "No inspec inputs matching '#{input_name}' found in cookbooks matching '#{cookbook_name}'"
+        end
+
+        inputs
+      end
+
+      def matching_inputs!(arg)
+        matching_inputs(arg, should_raise: true)
       end
     end
   end
